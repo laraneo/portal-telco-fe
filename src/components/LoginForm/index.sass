@@ -1,0 +1,51 @@
+@import '../../Styles/colors';
+@import '../../Styles/responsiveRules';
+
+.login-form-container
+    .login-form-container__title
+        text-align: center
+        color: $grey-default
+        font-weight: bold
+        margin-bottom: 30px
+    form
+        .login-form-container__field
+            text-align: center
+            color: $grey-default
+            display: flex
+            justify-content: space-between
+            .login-form-container__field-title
+                padding: 19px
+                font-weight: bold
+            .login-form-container__field-input
+                input
+                    border: 2px solid $grey-default
+                    padding: 10px
+                    color: $grey-default
+                    width: 80%
+                input:focus
+                    outline: none
+        .login-form-container__button
+            margin-top: 15px
+            text-align: right
+            margin-right: 10px
+            button
+                border: 2px solid $grey-default
+                color: $grey-default
+                padding: 10px
+                background: transparent
+                font-weight: bold
+                cursor: pointer
+            button:focus
+                outline: none
+
+@include phone('default','default',portrait)
+
+    .login-form-container
+        form
+            .login-form-container__field
+                .login-form-container__field-title
+                    font-size: 12px
+                .login-form-container__field-input
+                    width: 100%
+                    input
+                        width: 100%

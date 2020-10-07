@@ -1,0 +1,22 @@
+.main-loading-container
+  background-color: white
+  width: 100vw
+  height: 100vh
+  position: fixed
+  left: 0
+  top: 0
+  z-index: 1200
+  pointer-events: unset
+  display: none
+  .main-loading-container__backdrop
+    position: absolute
+    top: 0
+    bottom: 0
+    left: 0
+    right: 0
+    height: auto
+    margin: 250px
+    .main-loading-container__content
+      text-align: center
+.main-loading-container--active
+  display: block
