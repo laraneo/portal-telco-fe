@@ -50,6 +50,9 @@ import customModalReducer from './customModalReducer';
 import branchCompanyReducer from './branchCompanyReducer';
 import notificacionReducer from './notificacionReducer';
 import monedasReducer from './monedasReducer';
+import processReducer from './processReducer';
+import processRequestReducer from './processRequestReducer';
+import clientReducer from './clientReducer';
 
 const rootReducer = combineReducers({
   modalReducer,
@@ -99,7 +102,10 @@ const rootReducer = combineReducers({
   customModalReducer,
   branchCompanyReducer,
   notificacionReducer,
-  monedasReducer
+  monedasReducer,
+  processReducer,
+  processRequestReducer,
+  clientReducer
 });
 
 export default rootReducer;

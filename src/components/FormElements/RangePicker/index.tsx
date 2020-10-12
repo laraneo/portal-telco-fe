@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
         label: {
             padding: '0px !important',
             fontWeight: 'bold',
+            marginLeft: 8
         },
         fieldContainer: {
             paddingTop: '0px !important',

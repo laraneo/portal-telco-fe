@@ -44,7 +44,7 @@ const CustomSelect: FunctionComponent<CustomSelectProps> = ({
         )}
         <select
           ref={register({
-            required: required ? "Required" : false
+            required: required ? "Requerido" : false
           })}
           name={field}
           onChange={onChange ? onChange : () => { }}

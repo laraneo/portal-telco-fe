@@ -92,7 +92,7 @@ const CustomTextField: FunctionComponent<CustomTextFieldProps> = ({
       // max: type === 'date' ? getParseDateTime() : null
     }}
     inputRef={register({
-      required: required ? "Required" : false,
+      required: required ? "Requerido" : false,
       pattern: inputType ? getPattern(inputType) : null
     })}
     InputLabelProps={{

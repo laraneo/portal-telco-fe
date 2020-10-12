@@ -1,4 +1,9 @@
-import React, { useEffect, FunctionComponent, useCallback, useState } from "react";
+import React, {
+  useEffect,
+  FunctionComponent,
+  useCallback,
+  useState,
+} from "react";
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
@@ -7,12 +12,12 @@ import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import SettingsIcon from '@material-ui/icons/Settings';
+import SettingsIcon from "@material-ui/icons/Settings";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import Collapse from '@material-ui/core/Collapse'
+import Collapse from "@material-ui/core/Collapse";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { useHistory, useLocation } from "react-router-dom";
@@ -20,26 +25,34 @@ import {
   makeStyles,
   useTheme,
   Theme,
-  createStyles
+  createStyles,
 } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { useDispatch, useSelector } from "react-redux";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import IconExpandLess from '@material-ui/icons/ExpandLess'
-import IconExpandMore from '@material-ui/icons/ExpandMore'
+import IconExpandLess from "@material-ui/icons/ExpandLess";
+import IconExpandMore from "@material-ui/icons/ExpandMore";
 import LockIcon from "@material-ui/icons/Lock";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import _ from 'lodash';
+import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import _ from "lodash";
 
 import queryString from "query-string";
 
-import { logout, setForcedLogin, checkLogin, setupInterceptors } from "../../actions/loginActions";
+import {
+  logout,
+  setForcedLogin,
+  checkLogin,
+  setupInterceptors,
+} from "../../actions/loginActions";
 import AccessControlForm from "../../components/AccessControlForm";
 import { updateModal } from "../../actions/modalActions";
-import { getList as getMenuList, getWidgetList } from "../../actions/menuActions";
+import {
+  getList as getMenuList,
+  getWidgetList,
+} from "../../actions/menuActions";
 import { getAll as getGenderAll } from "../../actions/genderActions";
 import { getList as getLockerLocationList } from "../../actions/lockerLocationsActions";
 import { getAll as getStatusPersonAll } from "../../actions/statusPersonActions";
@@ -55,7 +68,7 @@ import { getClient } from "../../actions/personActions";
 import icons from "../../helpers/collectionIcons";
 import { Chip, Grid } from "@material-ui/core";
 import Logo from "../../components/Logo";
-import Helper from '../../helpers/utilities';
+import Helper from "../../helpers/utilities";
 import { getTasa } from "../../actions/webServiceActions";
 
 const drawerWidth = 240;
@@ -63,55 +76,55 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: "flex"
+      display: "flex",
     },
     drawer: {
       [theme.breakpoints.up("sm")]: {
         width: drawerWidth,
-        flexShrink: 0
-      }
+        flexShrink: 0,
+      },
     },
     appBar: {
       [theme.breakpoints.up("sm")]: {
         width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth
-      }
+        marginLeft: drawerWidth,
+      },
     },
     menuButton: {
       marginRight: theme.spacing(2),
       [theme.breakpoints.up("sm")]: {
-        display: "none"
-      }
+        display: "none",
+      },
     },
     toolbar: theme.mixins.toolbar,
     drawerPaper: {
-      width: drawerWidth
+      width: drawerWidth,
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(3)
+      padding: theme.spacing(3),
     },
     header: {
       display: "flex",
       justifyContent: "space-between",
-      width: "100%"
+      width: "100%",
     },
     menuContainer: {
-      fontSize: '10px',
+      fontSize: "10px",
     },
     profileButton: {
-      background: 'white'
+      background: "white",
     },
     hideMobileMenu: {
-      [theme.breakpoints.down('sm')]: {
-        display: 'none'
+      [theme.breakpoints.down("sm")]: {
+        display: "none",
       },
     },
     hideDeskMenu: {
-      [theme.breakpoints.up('sm')]: {
-        display: 'none'
+      [theme.breakpoints.up("sm")]: {
+        display: "none",
       },
-    }
+    },
   })
 );
 
@@ -143,39 +156,51 @@ const SubMenu: FunctionComponent<SubMenuProps> = ({ menu, item }) => {
     } else {
       setMenuItem(currentItem);
     }
-  }
+  };
 
   const handleSubMenuOrRoute = useCallback(() => {
-    findChildrens.length > 0 ? handleSubMenu(item.id) : handleRoute(item.route ? item.route : '/dashboard/main')
-  },
-    [item, findChildrens],
-  );
-  const mobile = item.show_mobile !== null && item.show_mobile === "0" ? classes.hideMobileMenu : '';
-  const desk = item.show_desk !== null && item.show_desk === "0" ? classes.hideDeskMenu : '';
+    findChildrens.length > 0
+      ? handleSubMenu(item.id)
+      : handleRoute(item.route ? item.route : "/dashboard/main");
+  }, [item, findChildrens]);
+  const mobile =
+    item.show_mobile !== null && item.show_mobile === "0"
+      ? classes.hideMobileMenu
+      : "";
+  const desk =
+    item.show_desk !== null && item.show_desk === "0"
+      ? classes.hideDeskMenu
+      : "";
   return (
     <React.Fragment key={item.id}>
-      <ListItem button onClick={handleSubMenuOrRoute} className={`${mobile} ${desk}`}>
-        <ListItemIcon >
+      <ListItem
+        button
+        onClick={handleSubMenuOrRoute}
+        className={`${mobile} ${desk}`}
+      >
+        <ListItemIcon>
           <Icon />
         </ListItemIcon>
         <ListItemText primary={item.name} />
-        {findChildrens.length > 0 && (
-          item.id === menuItem ? <IconExpandLess /> : <IconExpandMore />
-        )
-        }
+        {findChildrens.length > 0 &&
+          (item.id === menuItem ? <IconExpandLess /> : <IconExpandMore />)}
       </ListItem>
       {findChildrens.length > 0 && (
-        <Collapse in={item.id === menuItem || false} timeout="auto" unmountOnExit>
+        <Collapse
+          in={item.id === menuItem || false}
+          timeout="auto"
+          unmountOnExit
+        >
           <List dense>
-            {findChildrens.map((e: any, i: number) => <SubMenu key={i} menu={menu} item={e} />)}
+            {findChildrens.map((e: any, i: number) => (
+              <SubMenu key={i} menu={menu} item={e} />
+            ))}
           </List>
         </Collapse>
-      )
-
-      }
+      )}
     </React.Fragment>
-  )
-}
+  );
+};
 
 interface ResponsiveDrawerProps {
   /**
@@ -197,7 +222,9 @@ export default function Dashboard(props: ResponsiveDrawerProps) {
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
-  const { user, loading, userRoles } = useSelector((state: any) => state.loginReducer);
+  const { user, loading, userRoles } = useSelector(
+    (state: any) => state.loginReducer
+  );
 
   const { listData: menuList } = useSelector((state: any) => state.menuReducer);
 
@@ -207,98 +234,51 @@ export default function Dashboard(props: ResponsiveDrawerProps) {
     webServiceReducer: { tasa },
   } = useSelector((state: any) => state);
 
-  const [open1, setOpen1] = React.useState(false);
-  const [open2, setOpen2] = React.useState(false);
-  const [open3, setOpen3] = React.useState(false);
-  const [open4, setOpen4] = React.useState(false);
-  const [open5, setOpen5] = React.useState(false);
-
-
   const checkAuthRoutes = (items: Array<string | number>) => {
-    const route = location.pathname === '/dashboard' ? '/dashboard/main' : location.pathname;
+    const route =
+      location.pathname === "/dashboard"
+        ? "/dashboard/main"
+        : location.pathname;
     const isValid = items.find((e: any) => e.route === route);
     if (!isValid) {
       window.location.href = "/#/dashboard/main";
     }
-  }
+  };
 
   useEffect(() => {
     history.listen((location, action) => {
       if (!_.isEmpty(menuList) && menuList.items.length > 0) {
-        const route = location.pathname === '/dashboard' ? '/dashboard/main' : location.pathname;
+        const route =
+          location.pathname === "/dashboard"
+            ? "/dashboard/main"
+            : location.pathname;
         const isValid = menuList.items.find((e: any) => e.route === route);
         if (!isValid) {
           window.location.href = "/#/dashboard/main";
         }
       }
     });
-  }, [menuList])
+  }, [menuList]);
 
   useEffect(() => {
     async function run() {
-      const values = queryString.parse(location.search);
-      if (!_.isEmpty(values) && values.socio && values.token) {
-        if (
-          location.pathname === "/dashboard/status-account" ||
-          location.pathname === "/dashboard/actualizacion-datos"
-        )
-          await dispatch(setForcedLogin(values.socio, values.token));
-      }
       checkLogin()(dispatch).then(() => {
-        if (location.pathname !== '/') {
+        if (location.pathname !== "/") {
           dispatch(setupInterceptors());
         }
         dispatch(getMenuList(location.pathname));
-        dispatch(getClient(user.username));
-        dispatch(getProfessions());
         dispatch(getWidgetList());
         dispatch(getParameterList());
-        dispatch(getGenderAll());
-        dispatch(getLockerLocationList());
-        dispatch(getStatusPersonAll());
-        dispatch(getMaritalStatusAll());
-        dispatch(getCountries());
-        dispatch(getRelationTypes());
-        dispatch(getSports());
-        dispatch(getBranchCompanyList());
-        dispatch(getTasa());
-      })   
+      });
     }
     run();
-  }, [dispatch])
+  }, [dispatch]);
 
   useEffect(() => {
-    if (location.pathname === '/dashboard') {
-      history.push('/dashboard/main');
+    if (location.pathname === "/dashboard") {
+      history.push("/dashboard/main");
     }
   }, [history, location]);
-
-
-
-
-
-
-  function handleClick(value: number) {
-    switch (value) {
-      case 1:
-        setOpen1(!open1)
-        break;
-      case 2:
-        setOpen2(!open2)
-        break;
-      case 3:
-        setOpen3(!open3)
-        break;
-      case 4:
-        setOpen4(!open4)
-        break;
-      case 5:
-        setOpen5(!open5)
-        break;
-      default:
-        break;
-    }
-  }
 
   function setSubMenu(currentItem: any) {
     if (subMenuItem == currentItem) {
@@ -325,16 +305,25 @@ export default function Dashboard(props: ResponsiveDrawerProps) {
       }
     }
     return (
-      <ListItem button onClick={() => handeClick(item.route ? item.route : '/dashboard/main')}>
+      <ListItem
+        button
+        onClick={() => handeClick(item.route ? item.route : "/dashboard/main")}
+      >
         <ListItemIcon>
           <Icon />
         </ListItemIcon>
         <ListItemText primary={item.name} />
       </ListItem>
-    )
-  }
+    );
+  };
 
-  const renderSecondMenu = (CustomIcon: React.ReactType, title: string, route: string, menu: any, item: any) => {
+  const renderSecondMenu = (
+    CustomIcon: React.ReactType,
+    title: string,
+    route: string,
+    menu: any,
+    item: any
+  ) => {
     const findChildrens: any = menu.filter((e: any) => e.parent == item.id);
     let Icon = SettingsIcon;
     if (item.icons) {
@@ -345,29 +334,39 @@ export default function Dashboard(props: ResponsiveDrawerProps) {
     }
     return (
       <React.Fragment key={item.id}>
-        <ListItem button onClick={() => findChildrens.length > 0 ? setSecondSubMenu(item.id) : handeClick(item.route ? item.route : '/dashboard/main')}>
-          <ListItemIcon >
+        <ListItem
+          button
+          onClick={() =>
+            findChildrens.length > 0
+              ? setSecondSubMenu(item.id)
+              : handeClick(item.route ? item.route : "/dashboard/main")
+          }
+        >
+          <ListItemIcon>
             <Icon />
           </ListItemIcon>
           <ListItemText primary={item.name} />
-          {findChildrens.length > 0 && (
-            item.id === subMenuItem2 ? <IconExpandLess /> : <IconExpandMore />
-          )
-          }
+          {findChildrens.length > 0 &&
+            (item.id === subMenuItem2 ? (
+              <IconExpandLess />
+            ) : (
+              <IconExpandMore />
+            ))}
         </ListItem>
         {findChildrens.length > 0 && (
-          <Collapse in={item.id === subMenuItem2 ? true : false} timeout="auto" unmountOnExit>
+          <Collapse
+            in={item.id === subMenuItem2 ? true : false}
+            timeout="auto"
+            unmountOnExit
+          >
             <List dense>
               {findChildrens.map((e: any) => renderThirdMenu(e))}
             </List>
           </Collapse>
-        )
-
-        }
+        )}
       </React.Fragment>
-    )
-  }
-
+    );
+  };
 
   function build(menu: any) {
     return menu.map((item: any, i: number) => {
@@ -375,42 +374,61 @@ export default function Dashboard(props: ResponsiveDrawerProps) {
         const findChildrens: any = menu.filter((e: any) => e.parent == item.id);
         let Icon = SettingsIcon;
         if (item.icons) {
-          let currenMenutIcon = icons.find((e: any) => e.slug === item.icons.slug);
+          let currenMenutIcon = icons.find(
+            (e: any) => e.slug === item.icons.slug
+          );
           if (currenMenutIcon) {
             Icon = currenMenutIcon.name;
           }
         }
-        const mobile = item.show_mobile !== null && item.show_mobile == "0" ? classes.hideMobileMenu : '';
-        const desk = item.show_desk !== null && item.show_desk == "0" ? classes.hideDeskMenu : '';
+        const mobile =
+          item.show_mobile !== null && item.show_mobile == "0"
+            ? classes.hideMobileMenu
+            : "";
+        const desk =
+          item.show_desk !== null && item.show_desk == "0"
+            ? classes.hideDeskMenu
+            : "";
 
         return (
           <React.Fragment key={i}>
-            <ListItem 
-              button onClick={() => findChildrens.length > 0 ? setSubMenu(item.id) : handeClick(item.route ? item.route : '/dashboard/main')}
+            <ListItem
+              button
+              onClick={() =>
+                findChildrens.length > 0
+                  ? setSubMenu(item.id)
+                  : handeClick(item.route ? item.route : "/dashboard/main")
+              }
               className={`${desk} ${mobile}`}
-              >
-              <ListItemIcon >
+            >
+              <ListItemIcon>
                 <Icon />
               </ListItemIcon>
               <ListItemText primary={item.name} />
-              {findChildrens.length > 0 && (
-                item.id === subMenuItem ? <IconExpandLess /> : <IconExpandMore />
-              )
-              }
+              {findChildrens.length > 0 &&
+                (item.id === subMenuItem ? (
+                  <IconExpandLess />
+                ) : (
+                  <IconExpandMore />
+                ))}
             </ListItem>
             {findChildrens.length > 0 && (
-              <Collapse in={item.id === subMenuItem ? true : false} timeout="auto" unmountOnExit>
+              <Collapse
+                in={item.id === subMenuItem ? true : false}
+                timeout="auto"
+                unmountOnExit
+              >
                 <List dense>
-                  {findChildrens.map((e: any, i: number) => <SubMenu key={i} menu={menu} item={e} />)}
+                  {findChildrens.map((e: any, i: number) => (
+                    <SubMenu key={i} menu={menu} item={e} />
+                  ))}
                 </List>
               </Collapse>
-            )
-
-            }
+            )}
           </React.Fragment>
-        )
+        );
       }
-    })
+    });
   }
 
   function buildMenu(menu: any) {
@@ -442,50 +460,49 @@ export default function Dashboard(props: ResponsiveDrawerProps) {
         payload: {
           status: true,
           element: <AccessControlForm />,
-          customSize: 'medium'
-        }
+          customSize: "medium",
+        },
       })
     );
-  }
+  };
   const renderMenu = (Icon: React.ReactType, title: string, route: string) => (
     <ListItem button>
       <ListItemIcon>
         <Icon />
       </ListItemIcon>
-      <ListItemText
-        primary={title}
-        onClick={() => handeClick(route)}
-      />
+      <ListItemText primary={title} onClick={() => handeClick(route)} />
     </ListItem>
-  )
+  );
 
-  const renderFirstMenu = (Icon: React.ReactType, title: string, route: string) => (
+  const renderFirstMenu = (
+    Icon: React.ReactType,
+    title: string,
+    route: string
+  ) => (
     <MenuItem>
       <ListItemIcon>
         <Icon />
       </ListItemIcon>
-      <ListItemText
-        primary={title}
-        onClick={() => handeClick(route)}
-      />
+      <ListItemText primary={title} onClick={() => handeClick(route)} />
     </MenuItem>
-  )
+  );
 
-  const getRole = (role: string) => !_.isEmpty(user) ? user.roles.find((e: any) => e.slug === role) : '';
+  const getRole = (role: string) =>
+    !_.isEmpty(user) ? user.roles.find((e: any) => e.slug === role) : "";
 
   const drawer = () => {
     if (menuLoading) {
       return (
-        <div style={{ textAlign: 'center', marginTop: 20 }} >
+        <div style={{ textAlign: "center", marginTop: 20 }}>
           <Loader />
         </div>
-      )
+      );
     }
     return (
       <div>
         <Logo />
         <Divider />
-        <List dense >
+        <List dense>
           {!_.isEmpty(menuList) && buildMenu(menuList.items)}
           {/* <ListItem button onClick={() => handleClick(3)}>
           <ListItemIcon >
@@ -525,11 +542,11 @@ export default function Dashboard(props: ResponsiveDrawerProps) {
           } */}
         </List>
       </div>
-    )
+    );
   };
   // const nameRole: any = !_.isEmpty(user) ? user.role.name : '';
-  const currentRole = userRoles.find((e: any) => e.slug === 'socio');
-  const parameter = Helper.getParameter(parameterList, 'CLIENT_NAME')
+  const currentRole = userRoles.find((e: any) => e.slug === "socio");
+  const parameter = Helper.getParameter(parameterList, "CLIENT_NAME");
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -546,17 +563,32 @@ export default function Dashboard(props: ResponsiveDrawerProps) {
           </IconButton>
           <div className={classes.header}>
             <Grid container spacing={1}>
-                <Grid item xs={6} sm={6} md={6} onClick={ () => history.push('/dashboard/main')} style={{ cursor: 'pointer' }}>
-                  <Typography variant="h6" noWrap >
-                    <Grid container spacing={1}>
-                      <Grid item xs={12}>Portal de Socio</Grid>
+              <Grid
+                item
+                xs={6}
+                sm={6}
+                md={6}
+                onClick={() => history.push("/dashboard/main")}
+                style={{ cursor: "pointer" }}
+              >
+                <Typography variant="h6" noWrap>
+                  <Grid container spacing={1}>
+                    <Grid item xs={12}>
+                      Portal de AutoGestion
                     </Grid>
-                    <Grid item xs={12} style={{ fontSize: 14, fontStyle: 'italic' }}>{parameter.value}</Grid>
-                  </Typography>
-                </Grid>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    style={{ fontSize: 14, fontStyle: "italic" }}
+                  >
+                    {parameter.value}
+                  </Grid>
+                </Typography>
+              </Grid>
 
-              <Grid item xs={6} sm={6} md={6} style={{ textAlign: 'right' }}>
-                <Typography variant="h6" noWrap style={{ lineHeight: 3 }} >
+              <Grid item xs={6} sm={6} md={6} style={{ textAlign: "right" }}>
+                <Typography variant="h6" noWrap style={{ lineHeight: 3 }}>
                   <div>
                     <Button
                       startIcon={<AccountCircleIcon />}
@@ -574,15 +606,38 @@ export default function Dashboard(props: ResponsiveDrawerProps) {
                       open={Boolean(anchorEl)}
                       onClose={handleClose}
                     >
-                      <MenuItem><AccountCircleIcon /> Usuario: {!loading && user.name}</MenuItem>
-                      {
-                        !currentRole && (
-                          <MenuItem><AssignmentIndIcon />Rol: {userRoles.length > 0 && userRoles.map((element: any) => (<Chip label={element.name} color="primary" size="small" />))}</MenuItem>
-                        )
-                      }
-                      <MenuItem onClick={() => history.push('/dashboard/update-password')} ><LockIcon /> Cambio de Clave</MenuItem>
-                      <MenuItem onClick={() => history.push('/dashboard/my-access')}><AccessTimeIcon /> Mi QR</MenuItem>
-                      <MenuItem onClick={() => handleLogout()}><ExitToAppIcon /> Logout</MenuItem>
+                      <MenuItem>
+                        <AccountCircleIcon /> Usuario: {!loading && user.name}
+                      </MenuItem>
+                      {!currentRole && (
+                        <MenuItem>
+                          <AssignmentIndIcon />
+                          Rol:{" "}
+                          {userRoles.length > 0 &&
+                            userRoles.map((element: any) => (
+                              <Chip
+                                label={element.name}
+                                color="primary"
+                                size="small"
+                              />
+                            ))}
+                        </MenuItem>
+                      )}
+                      <MenuItem
+                        onClick={() =>
+                          history.push("/dashboard/update-password")
+                        }
+                      >
+                        <LockIcon /> Cambio de Clave
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => history.push("/dashboard/my-access")}
+                      >
+                        <AccessTimeIcon /> Mi QR
+                      </MenuItem>
+                      <MenuItem onClick={() => handleLogout()}>
+                        <ExitToAppIcon /> Logout
+                      </MenuItem>
                     </Menu>
                   </div>
                 </Typography>
@@ -601,10 +656,10 @@ export default function Dashboard(props: ResponsiveDrawerProps) {
             open={mobileOpen}
             onClose={handleDrawerToggle}
             classes={{
-              paper: classes.drawerPaper
+              paper: classes.drawerPaper,
             }}
             ModalProps={{
-              keepMounted: true // Better open performance on mobile.
+              keepMounted: true, // Better open performance on mobile.
             }}
           >
             {drawer()}
@@ -613,7 +668,7 @@ export default function Dashboard(props: ResponsiveDrawerProps) {
         <Hidden xsDown implementation="css">
           <Drawer
             classes={{
-              paper: classes.drawerPaper
+              paper: classes.drawerPaper,
             }}
             variant="permanent"
             open
