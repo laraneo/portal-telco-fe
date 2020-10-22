@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Grid } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
@@ -9,7 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import Upload from "../FormElements/Upload";
 import CustomSelect from "../FormElements/CustomSelect";
 import CustomTextField from "../FormElements/CustomTextField";
-import { getList as getProcessList } from "../../actions/processActions";
+import { getList as getProcessList, getProcessByCategory } from "../../actions/processActions";
+import { getList as getProcessCategoryList } from "../../actions/processCategoryActions";
 import { create } from "../../actions/processRequestActions";
 
 import Styles from "./style";
@@ -21,9 +22,11 @@ type FormData = {
   file: string;
   reference: string;
   description: string;
+  category: string;
 };
 
 export default function LoadRequestForm(): JSX.Element {
+  const [ disableProcess, setDisableProcess ] = useState<boolean>(true)
   const classes = useStyles();
   const {
     handleSubmit,
@@ -37,10 +40,11 @@ export default function LoadRequestForm(): JSX.Element {
   const {
     processRequestReducer: { loading },
     processReducer: { listData: processList },
+    processCategoryReducer: { listData: processCategoryList },
   } = useSelector((state: any) => state);
 
   useEffect(() => {
-    dispatch(getProcessList());
+    dispatch(getProcessCategoryList());
   }, [dispatch]);
 
   const handleForm = async (form: any) => {
@@ -52,6 +56,13 @@ export default function LoadRequestForm(): JSX.Element {
     reset();
   };
 
+  const handleCategory = (event: any) => {
+    setDisableProcess(true);
+    getProcessByCategory(event.target.value)(dispatch).then(() => {
+      setDisableProcess(false);
+    });
+  }
+
   return (
     <Grid container spacing={3}>
       <form
@@ -62,20 +73,45 @@ export default function LoadRequestForm(): JSX.Element {
         <Grid container spacing={1}>
           <Grid item sm={12} xs={12} md={12}>
             <CustomSelect
+              label="Categoria"
+              selectionMessage="Seleccione"
+              field="category"
+              required
+              register={register}
+              
+              errorsMessageField={errors.category && errors.category.message}
+              onChange={handleCategory}
+            >
+              {processCategoryList.map((item: any, i: number) => (
+                <option key={i} value={item.id}>
+                  {item.sName}
+                </option>
+              ))}
+            </CustomSelect>
+          </Grid>
+          <Grid item sm={12} xs={12} md={12}>
+            <CustomSelect
               label="Tipo de Solicitud"
               selectionMessage="Seleccione"
               field="process_id"
               required
               register={register}
+              disabled={disableProcess}
               errorsMessageField={
                 errors.process_id && errors.process_id.message
               }
             >
-              {processList.map((item: any, i: number) => (
-                <option key={i} value={item.id}>
-                  {item.sName}
-                </option>
-              ))}
+              {processList.map((item: any, i: number) => {
+                const form = getValues();
+                console.log('form ', form);
+                if (item.idProcessCategory == form.category) {
+                  return (
+                    <option key={i} value={item.id}>
+                      {item.sName}
+                    </option>
+                  );
+                }
+              })}
             </CustomSelect>
           </Grid>
           <Grid item sm={12} xs={12} md={12}>
@@ -95,7 +131,9 @@ export default function LoadRequestForm(): JSX.Element {
               register={register}
               required
               errorsField={errors.description}
-              errorsMessageField={errors.description && errors.description.message}
+              errorsMessageField={
+                errors.description && errors.description.message
+              }
             />
           </Grid>
           <Grid item sm={12} xs={12} md={12} style={{ paddingTop: 15 }}>

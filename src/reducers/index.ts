@@ -53,6 +53,7 @@ import monedasReducer from './monedasReducer';
 import processReducer from './processReducer';
 import processRequestReducer from './processRequestReducer';
 import clientReducer from './clientReducer';
+import processCategoryReducer from './processCategoryReducer';
 
 const rootReducer = combineReducers({
   modalReducer,
@@ -105,7 +106,8 @@ const rootReducer = combineReducers({
   monedasReducer,
   processReducer,
   processRequestReducer,
-  clientReducer
+  clientReducer,
+  processCategoryReducer
 });
 
 export default rootReducer;

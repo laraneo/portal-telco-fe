@@ -1,9 +1,9 @@
-import API from "../api/Process";
+import API from "../api/ProcessCategory";
 import snackBarUpdate from "../actions/snackBarActions";
 import { updateModal } from "../actions/modalActions";
 
 export const ACTIONS = {
-  GET_LIST: "process/get_list",
+  GET_LIST: "process-category/get_list",
 };
 
 interface GetList {
@@ -26,55 +26,6 @@ export const getList = () => async (dispatch: Function) => {
       data: { data },
       status,
     } = await API.getList();
-    let response = [];
-    if (status === 200) {
-      response = data;
-      dispatch({
-        type: ACTIONS.GET_LIST,
-        payload: response,
-      });
-      dispatch(
-        updateModal({
-          payload: {
-            isLoader: false,
-          },
-        })
-      );
-    }
-    return response;
-  } catch (error) {
-    dispatch(
-      updateModal({
-        payload: {
-          isLoader: false,
-        },
-      })
-    );
-    snackBarUpdate({
-      payload: {
-        message: error.message,
-        status: true,
-        type: "error",
-      },
-    })(dispatch);
-    return error;
-  }
-};
-
-
-export const getProcessByCategory = (category: number) => async (dispatch: Function) => {
-  dispatch(
-    updateModal({
-      payload: {
-        isLoader: true,
-      },
-    })
-  );
-  try {
-    const {
-      data: { data },
-      status,
-    } = await API.getProcessByCategory(category);
     let response = [];
     if (status === 200) {
       response = data;
