@@ -45,14 +45,20 @@ const Upload: FunctionComponent<UploadProps> = ({
 
   const loadDocument = (e: any) => {
     const current = e.target.files[0];
+    console.log("current.type ", current);
     if (e.target.files.length > 0) {
       //console.log('current.type ', current.type);
       if (
         current.type === "image/png" ||
         current.type === "image/jpeg" ||
         current.type === "application/pdf" ||
+        current.type === "text/csv" ||
+        current.type === "text/plain" ||
+        current.type === "application/vnd.ms-excel" || // .xls
+        // current.type ===
+        //   "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
         current.type ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // .xlsx
       ) {
         if (current.size <= 5000000) {
           const reader: any = new FileReader();
@@ -80,7 +86,7 @@ const Upload: FunctionComponent<UploadProps> = ({
         dispatch(
           snackBarUpdate({
             payload: {
-              message: "Solo de Admiten los formatos: .pdf - .doc",
+              message: "Solo de Admiten los formatos: .pdf - .doc - .xls - .xlsx - .csv - .txt - .png - .jpg",
               type: "error",
               status: true,
             },

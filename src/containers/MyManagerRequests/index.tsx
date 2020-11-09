@@ -1,16 +1,23 @@
-import { Grid, Chip, IconButton, Button } from "@material-ui/core";
+import { Grid, Chip, IconButton } from "@material-ui/core";
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SearchIcon from "@material-ui/icons/Search";
+import Button from "@material-ui/core/Button";
+import DescriptionIcon from '@material-ui/icons/Description';
 
-import { getAll, getAllByManager } from "../../actions/processRequestActions";
+import {
+  getAllByManager,
+  getUsersByManager,
+} from "../../actions/processRequestActions";
 import DataTable4 from "../../components/DataTable4";
 import { useForm } from "react-hook-form";
 import CustomSelect from "../../components/FormElements/CustomSelect";
-import { getList as getProcessList } from "../../actions/processActions";
+import { getProcessByCategory } from "../../actions/processActions";
+import { getList as GetAllCategories } from "../../actions/processCategoryActions";
 import Styles from "./style";
 import RangePicker from "../../components/FormElements/RangePicker";
+import CustomTextField from "../../components/FormElements/CustomTextField";
 
 interface Columns {
   id:
@@ -33,30 +40,59 @@ interface Columns {
 }
 
 type FormData = {
+  category: number;
+  user_id: number;
   process_id: number;
   nStatus: string;
   created_start: string;
   created_end: string;
+  term: string;
 };
 
 const useStyles = Styles;
 
 export default function MyManagerRequests() {
+  const [disableProcess, setDisableProcess] = useState<boolean>(true);
   const {
-    processRequestReducer: { list: processRequestList, loading },
+    processRequestReducer: {
+      list: processRequestList,
+      loading,
+      usersByManager,
+    },
     processReducer: { listData: processList },
+    processCategoryReducer: { listData: processCategoryList },
+    loginReducer: {
+      user: { id: userId },
+    },
   } = useSelector((state: any) => state);
   const dispatch = useDispatch();
   const classes = useStyles();
   const { handleSubmit, register, errors, watch } = useForm<FormData>();
 
   useEffect(() => {
-    dispatch(getProcessList());
+    dispatch(GetAllCategories());
     dispatch(getAllByManager());
+    dispatch(getUsersByManager());
   }, [dispatch]);
 
   const getRow = (row: any) =>
     processRequestList.find((element: any) => element.id == row);
+
+  const checkFiles = (file: string, status: string) => {
+    if (status === "0" && file === "fuente") {
+      return true;
+    }
+    if (status === "-1" && (file === "fuente" || file === "log")) {
+      return true;
+    }
+    if (
+      status === "1" &&
+      (file === "fuente" || file === "procesado" || file === "log")
+    ) {
+      return true;
+    }
+    return false;
+  };
 
   const columns: Columns[] = [
     {
@@ -71,7 +107,11 @@ export default function MyManagerRequests() {
       label: "Usuario",
       minWidth: 10,
       align: "left",
-      component: (value: any) => <span><strong>{value.value && value.value.username}</strong></span>,
+      component: (value: any) => (
+        <span>
+          <strong>{value.value && value.value.username}</strong>
+        </span>
+      ),
     },
     {
       id: "dDate",
@@ -100,29 +140,23 @@ export default function MyManagerRequests() {
     },
     {
       id: "id",
-      label: "Archivo Fuente",
+      label: "Fuente",
       minWidth: 10,
       align: "left",
       component: (value: any) => {
         const row = getRow(value.value);
-        if (row.sSourceFile) {
+        const check = checkFiles("fuente", row.nStatus);
+        if (row.sSourceFile && check) {
           return (
-            <div
-              style={{
-                width: 150,
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-              }}
+            <a
+              target="_blank"
+              href={row.sSourceFileDownload}
+              title="comprobante"
             >
-              <a
-                target="_blank"
-                href={row.sSourceFileDownload}
-                title="comprobante"
-              >
-                {row.sSourceFile}
-              </a>
-            </div>
+              <IconButton aria-label="file" size="small" color="primary">
+                <DescriptionIcon fontSize="inherit" />
+              </IconButton>
+            </a>
           );
         }
         return <div />;
@@ -130,29 +164,23 @@ export default function MyManagerRequests() {
     },
     {
       id: "id",
-      label: "Archivo Procesado",
+      label: "Procesado",
       minWidth: 10,
       align: "left",
       component: (value: any) => {
         const row = getRow(value.value);
-        if (row.sTargetFile && row.nStatus === "1") {
+        const check = checkFiles("procesado", row.nStatus);
+        if (row.sTargetFile && check) {
           return (
-            <div
-              style={{
-                width: 150,
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-              }}
+            <a
+              target="_blank"
+              href={row.sTargetFileDownload}
+              title="comprobante"
             >
-              <a
-                target="_blank"
-                href={row.sTargetFileDownload}
-                title="comprobante"
-              >
-                {row.sTargetFile}
-              </a>
-            </div>
+              <IconButton aria-label="file" size="small" color="primary">
+                <DescriptionIcon fontSize="inherit" />
+              </IconButton>
+            </a>
           );
         }
         return <div />;
@@ -165,24 +193,14 @@ export default function MyManagerRequests() {
       align: "left",
       component: (value: any) => {
         const row = getRow(value.value);
-        if (row.sLogFile) {
+        const check = checkFiles("log", row.nStatus);
+        if (row.sLogFile && check) {
           return (
-            <div
-              style={{
-                width: 150,
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-              }}
-            >
-              <a
-                target="_blank"
-                href={row.sLogFileDownload}
-                title="comprobante"
-              >
-                {row.sLogFile}
-              </a>
-            </div>
+            <a target="_blank" href={row.sLogFileDownload} title="comprobante">
+              <IconButton aria-label="file" size="small" color="primary">
+                <DescriptionIcon fontSize="inherit" />
+              </IconButton>
+            </a>
           );
         }
         return <div />;
@@ -222,10 +240,46 @@ export default function MyManagerRequests() {
         );
       },
     },
+    {
+      id: "id",
+      label: "",
+      minWidth: 10,
+      align: "left",
+      component: (value: any) => {
+        const row = getRow(value.value);
+        if (row.nStatus === "1") {
+          return (
+            <a
+              target="_blank"
+              href={row.sTargetFileDownload}
+              title="comprobante"
+            >
+              <Button
+                type="button"
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ fontSize: 10 }}
+              >
+                Download
+              </Button>
+            </a>
+          );
+        }
+        return <div />;
+      },
+    },
   ];
 
   const handleForm = async (form: FormData) => {
-    dispatch(getAll(form));
+    dispatch(getAllByManager(form));
+  };
+
+  const handleCategory = (event: any) => {
+    setDisableProcess(true);
+    getProcessByCategory(event.target.value)(dispatch).then(() => {
+      setDisableProcess(false);
+    });
   };
 
   return (
@@ -235,8 +289,8 @@ export default function MyManagerRequests() {
         noValidate
         className={classes.form}
       >
-        <Grid item xs={12} style={{ fontWeight: 'bold' }} >
-        Solicitudes de mi Grupo
+        <Grid item xs={12} style={{ fontWeight: "bold" }}>
+          Solicitudes de mi Grupo
         </Grid>
         <Grid
           item
@@ -246,18 +300,48 @@ export default function MyManagerRequests() {
           style={{ marginTop: 20, marginBottom: 30 }}
         >
           <Grid container spacing={3}>
-            <Grid item sm={4} xs={4} md={4}>
-              <RangePicker
-                label="Fecha"
-                startField="created_start"
-                endField="created_end"
+            <Grid item sm={12} xs={12} md={12}>
+              <Grid container spacing={1}>
+                <Grid item sm={2} xs={2} md={2}>
+                  <CustomTextField
+                    placeholder="Buscar"
+                    field="term"
+                    register={register}
+                    errorsField={errors.term}
+                    errorsMessageField={errors.term && errors.term.message}
+                    Icon={SearchIcon}
+                  />
+                </Grid>
+                <Grid item sm={4} xs={4} md={4}>
+                  <RangePicker
+                    label="Fecha"
+                    startField="created_start"
+                    endField="created_end"
+                    register={register}
+                    watch={watch}
+                    startMsgErr={
+                      errors.created_start && errors.created_start.message
+                    }
+                    endMsgErr={errors.created_end && errors.created_end.message}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item sm={2} xs={2} md={2}>
+              <CustomSelect
+                label="Categoria"
+                selectionMessage="Seleccione"
+                field="category"
                 register={register}
-                watch={watch}
-                startMsgErr={
-                  errors.created_start && errors.created_start.message
-                }
-                endMsgErr={errors.created_end && errors.created_end.message}
-              />
+                errorsMessageField={errors.category && errors.category.message}
+                onChange={handleCategory}
+              >
+                {processCategoryList.map((item: any, i: number) => (
+                  <option key={i} value={item.id}>
+                    {item.sName}
+                  </option>
+                ))}
+              </CustomSelect>
             </Grid>
             <Grid item sm={2} xs={2} md={2}>
               <CustomSelect
@@ -276,28 +360,54 @@ export default function MyManagerRequests() {
                 ))}
               </CustomSelect>
             </Grid>
-            <Grid item sm={2} xs={2} md={2}>
-              <CustomSelect
-                label="Status"
-                selectionMessage="Seleccione"
-                field="nStatus"
-                register={register}
-                errorsMessageField={errors.nStatus && errors.nStatus.message}
-              >
-                <option value="0">Pendiente</option>
-                <option value="-1">Rechazado</option>
-                <option value="1">Procesado</option>
-              </CustomSelect>
-            </Grid>
-            <Grid item sm={3} xs={3} md={3}>
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                style={{ marginTop: 15 }}
-              >
-                Buscar
-              </Button>
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                <Grid item sm={2} xs={2} md={2}>
+                  <CustomSelect
+                    label="Status"
+                    selectionMessage="Seleccione"
+                    field="nStatus"
+                    register={register}
+                    errorsMessageField={
+                      errors.nStatus && errors.nStatus.message
+                    }
+                  >
+                    <option value="0">Pendiente</option>
+                    <option value="-1">Rechazado</option>
+                    <option value="1">Procesado</option>
+                  </CustomSelect>
+                </Grid>
+                <Grid item sm={2} xs={2} md={2}>
+                  <CustomSelect
+                    label="Usuarios"
+                    selectionMessage="Seleccione"
+                    field="user_id"
+                    register={register}
+                    errorsMessageField={
+                      errors.user_id && errors.user_id.message
+                    }
+                  >
+                    {usersByManager.map(
+                      (item: any, i: number) =>
+                        item.id !== userId && (
+                          <option key={i} value={item.id}>
+                            {item.name}
+                          </option>
+                        )
+                    )}
+                  </CustomSelect>
+                </Grid>
+                <Grid item sm={3} xs={3} md={3}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    style={{ marginTop: 15 }}
+                  >
+                    Buscar
+                  </Button>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>

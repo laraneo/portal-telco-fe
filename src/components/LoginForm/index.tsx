@@ -64,7 +64,7 @@ const LoginForm: FunctionComponent<LoginFormProps> = ({ handleForm, loading }) =
       <div className={classes.paper}>
         <Logo />
         <Typography component="h1" variant="h5">
-          Portal de Socios
+          Portal TELCO
         </Typography>
         <form
           className={classes.form}

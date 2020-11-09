@@ -79,17 +79,17 @@ const UserForm: FunctionComponent<FormComponentProps> = ({ id }) => {
 
   const {
     userReducer: { loading },
-    loginReducer: { userRoles, user: { client_id: authUserClientId } },
+    loginReducer: {
+      userRoles,
+      user: { client_id: authUserClientId },
+    },
     roleReducer: { list },
     clientReducer: { listData: clientList },
   } = useSelector((state: any) => state);
 
   const dispatch = useDispatch();
 
-
-  const checkTransferListRoles = (roles: any) => {
-
-  } 
+  const checkTransferListRoles = (roles: any) => {};
 
   useEffect(() => {
     dispatch(getClientList());
@@ -106,6 +106,7 @@ const UserForm: FunctionComponent<FormComponentProps> = ({ id }) => {
           share_to,
           username_legacy,
           client_id,
+          role,
         } = response;
         setValue("username", username);
         setValue("username_legacy", username_legacy);
@@ -113,6 +114,8 @@ const UserForm: FunctionComponent<FormComponentProps> = ({ id }) => {
         setValue("email", email);
         setValue("share_from", share_from);
         setValue("share_to", share_to);
+        setValue("client_id", client_id);
+        setValue("role", role);
         if (username !== null || username !== "") {
           setCurrentUsername(true);
         } else {
@@ -171,22 +174,50 @@ const UserForm: FunctionComponent<FormComponentProps> = ({ id }) => {
   };
 
   const getValidRoles = () => {
-    const isManager = userRoles.find((element: any) => element.slug === 'manager');
-    if(isManager && authUserClientId) {
+    const isManager = userRoles.find(
+      (element: any) => element.slug === "manager"
+    );
+    if (isManager && authUserClientId) {
       setValue("client_id", authUserClientId);
     }
     let roles = [
-      { id: 1, name: 'Administrador' },
-      { id: 2, name: 'Manager' },
-      { id: 3, name: 'EndUser' }
-    ]
-    if(isManager) {
-      roles = [
-        { id: 3, name: 'EndUser' }
-      ]
+      { id: 1, name: "Administrador" },
+      { id: 2, name: "Manager" },
+      { id: 3, name: "EndUser" },
+    ];
+    if (isManager) {
+      roles = [{ id: 3, name: "EndUser" }];
     }
-    return  roles.map((element: any, i: number) => <option key={1} value={element.id}> {element.name} </option>)
-  }
+    return roles.map((element: any, i: number) => (
+      <option key={1} value={element.id}>
+        {" "}
+        {element.name}{" "}
+      </option>
+    ));
+  };
+
+  const renderValidClients = () => {
+    const isManager = userRoles.find(
+      (element: any) => element.slug === "manager"
+    );
+
+    if (isManager && authUserClientId && clientList.length > 0) {
+      const clientsToFind = [...clientList];
+      console.log('clientsToFind ', clientsToFind);
+      console.log('authUserClientId ', authUserClientId);
+      const currentClient = clientsToFind.find(
+        (element) => element.id === Number(authUserClientId)
+      );
+      console.log('currentClient ', currentClient);
+      return <option value={currentClient.id}>{currentClient.sName}</option>;
+    }
+
+    return clientList.map((item: any) => (
+      <option key={item.id} value={item.id}>
+        {item.sName}
+      </option>
+    ));
+  };
 
   return (
     <Container component="main" className={classes.rootUserForm}>
@@ -287,12 +318,9 @@ const UserForm: FunctionComponent<FormComponentProps> = ({ id }) => {
                 errorsMessageField={
                   errors.client_id && errors.client_id.message
                 }
+                required
               >
-                {clientList.map((item: any) => (
-                  <option key={item.id} value={item.id}>
-                    {item.sName}
-                  </option>
-                ))}
+                {renderValidClients()}
               </CustomSelect>
             </Grid>
             <Grid item xs={12}>

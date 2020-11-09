@@ -16,6 +16,12 @@ const API = {
       headers: headers()
     });
   },
+  getUsersByManager(params: any): Promise<AxiosResponse> {
+    return AXIOS.get(`${Prefix.api}/users-by-manager`, {
+      params: { ...params },
+      headers: headers()
+    });
+  },
   getList() {
     return AXIOS.get(`${Prefix.api}/process-request-list`, { headers: headers() });
   },

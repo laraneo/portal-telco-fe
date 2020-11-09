@@ -5,6 +5,7 @@ type InitStates = {
   loading: boolean;
   pagination: any;
   listData: any;
+  usersByManager: Array<string | number>;
 };
 
 const initialState: InitStates = {
@@ -17,12 +18,12 @@ const initialState: InitStates = {
     currentPage: 0,
   },
   listData: [],
+  usersByManager: [],
 };
 
 const processRequestReducer = (state = initialState, action: ActionTypes) => {
   switch (action.type) {
     case ACTIONS.GET_ALL:
-      console.log('action.payload ', action.payload);
       return {
         ...state,
         list: action.payload,
@@ -32,6 +33,11 @@ const processRequestReducer = (state = initialState, action: ActionTypes) => {
         ...state,
         listData: action.payload,
       };
+      case ACTIONS.GET_USERS_BY_MANAGER:
+        return {
+          ...state,
+          usersByManager: action.payload,
+        };
     case ACTIONS.SET_PAGINATION:
       return {
         ...state,

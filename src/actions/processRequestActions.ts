@@ -6,6 +6,7 @@ export const ACTIONS = {
   GET_ALL: "process-request/get_all",
   GET: "process-request/get",
   GET_LIST: "process-request/get_list",
+  GET_USERS_BY_MANAGER: "process-request/get_users_by_manager",
   SET_LOADING: "process-request/set_loading",
   SET_PAGINATION: "process-request/set_pagination",
 };
@@ -17,6 +18,11 @@ interface Get {
 
 interface GetAll {
   type: typeof ACTIONS.GET_ALL;
+  payload: Array<string | number>;
+}
+
+interface GetUsersByManager {
+  type: typeof ACTIONS.GET_USERS_BY_MANAGER;
   payload: Array<string | number>;
 }
 
@@ -35,7 +41,7 @@ interface SetPagination {
   payload: Array<string | number>;
 }
 
-export type ActionTypes = Get | GetAll | SetLoading | SetPagination | GetList;
+export type ActionTypes = Get | GetAll | SetLoading | SetPagination | GetList | GetUsersByManager;
 
 export const getAll = (queryParams: any = {}) => async (
   dispatch: Function
@@ -97,6 +103,47 @@ export const getAllByManager = (queryParams: any = {}) => async (
       response = data;
       dispatch({
         type: ACTIONS.GET_ALL,
+        payload: response,
+      });
+      dispatch({
+        type: ACTIONS.SET_LOADING,
+        payload: false,
+      });
+    }
+    return response;
+  } catch (error) {
+    snackBarUpdate({
+      payload: {
+        message: error.message,
+        status: true,
+        type: "error",
+      },
+    })(dispatch);
+    dispatch({
+      type: ACTIONS.SET_LOADING,
+      payload: false,
+    });
+    return error;
+  }
+};
+
+export const getUsersByManager = (queryParams: any = {}) => async (
+  dispatch: Function
+) => {
+  dispatch({
+    type: ACTIONS.SET_LOADING,
+    payload: true,
+  });
+  try {
+    const {
+      data: { data },
+      status,
+    } = await API.getUsersByManager(queryParams);
+    let response = [];
+    if (status === 200) {
+      response = data;
+      dispatch({
+        type: ACTIONS.GET_USERS_BY_MANAGER,
         payload: response,
       });
       dispatch({
