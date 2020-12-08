@@ -6,6 +6,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import { useHistory } from "react-router-dom";
+import DescriptionIcon from '@material-ui/icons/Description';
 
 import { getAll } from "../../actions/processRequestActions";
 import { getList as GetAllCategories } from "../../actions/processCategoryActions";
@@ -114,7 +115,7 @@ export default function MyRequests() {
     },
     {
       id: "id",
-      label: "Archivo Fuente",
+      label: "Fuente",
       minWidth: 10,
       align: "left",
       component: (value: any) => {
@@ -122,22 +123,15 @@ export default function MyRequests() {
         const check = checkFiles('fuente', row.nStatus);
         if (row.sSourceFile && check) {
           return (
-            <div
-              style={{
-                width: 150,
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-              }}
-            >
-              <a
-                target="_blank"
-                href={row.sSourceFileDownload}
-                title="comprobante"
-              >
-                {row.sSourceFile}
-              </a>
-            </div>
+            <a
+            target="_blank"
+            href={row.sSourceFileDownload}
+            title="comprobante"
+          >
+            <IconButton aria-label="file" size="small" color="primary">
+              <DescriptionIcon fontSize="inherit" />
+            </IconButton>
+          </a>
           );
         }
         return <div />;
@@ -145,7 +139,7 @@ export default function MyRequests() {
     },
     {
       id: "id",
-      label: "Archivo Procesado",
+      label: "Procesado",
       minWidth: 10,
       align: "left",
       component: (value: any) => {
@@ -153,22 +147,15 @@ export default function MyRequests() {
         const check = checkFiles('procesado', row.nStatus);
         if (row.sTargetFile && check) {
           return (
-            <div
-              style={{
-                width: 150,
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-              }}
+            <a
+              target="_blank"
+              href={row.sTargetFileDownload}
+              title="comprobante"
             >
-              <a
-                target="_blank"
-                href={row.sTargetFileDownload}
-                title="comprobante"
-              >
-                {row.sTargetFile}
-              </a>
-            </div>
+              <IconButton aria-label="file" size="small" color="primary">
+                <DescriptionIcon fontSize="inherit" />
+              </IconButton>
+            </a>
           );
         }
         return <div />;
@@ -184,22 +171,11 @@ export default function MyRequests() {
         const check = checkFiles('log', row.nStatus);
         if (row.sLogFile && check) {
           return (
-            <div
-              style={{
-                width: 150,
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-              }}
-            >
-              <a
-                target="_blank"
-                href={row.sLogFileDownload}
-                title="comprobante"
-              >
-                {row.sLogFile}
-              </a>
-            </div>
+            <a target="_blank" href={row.sLogFileDownload} title="comprobante">
+            <IconButton aria-label="file" size="small" color="primary">
+              <DescriptionIcon fontSize="inherit" />
+            </IconButton>
+          </a>
           );
         }
         return <div />;
